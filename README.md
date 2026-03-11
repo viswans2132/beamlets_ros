@@ -1,2 +1,0 @@
-Code to build a Beamlet graph for path planning with curvature constraints. The algorithm is described in the paper "Solving Shortest Path Problems with Curvature Constraints Using Beamlets," by O. Arslan, P. Tsiotras, and X. Huo, 
-presented in the  IEEE/RSJ International Conference on Intelligent Robots and Systems, San Francisco, CA, Sept. 25-30, 2011, pp. 3533-3538, doi:10.1109/IROS.2011.6048546.
