@@ -8,6 +8,7 @@
  */
 
 #include "beamlet_star_ros/DyadicObject.h"
+#include <cmath>
 
 // DyadicObject::DyadicObject(): key(), clusterList(), boundaries(NULL)
 // {
@@ -33,9 +34,11 @@ DyadicObject::DyadicObject(): key(), boundaries(nullptr)
 
 }
 
-DyadicObject::DyadicObject(const Key & key): key(), boundaries(nullptr)
+DyadicObject::DyadicObject(const Key & key): key(), boundaries(nullptr), obstacleCount(0), color("GRAY")
 {
 	this->SetKey(key);
+	for(int i=0; i<4; i++)
+        children[i] = nullptr;
 }
 
 Key
@@ -58,7 +61,79 @@ DyadicObject::SetKey(const Key& key)
 	this->key.position = key.position;
 }
 
+void DyadicObject::setBoundaries(int totalRows, int totalCols)
+{
+    boundaries = new int*[4];
+    for (int i = 0; i < 4; ++i)
+        boundaries[i] = new int[2];
+
+    int scale = key.scale;
+    int x = key.position[0];
+    int y = key.position[1];
+    int size = static_cast<int>(pow(2, scale));
+
+    int rowStart = (x - 1) * size; // 1-based
+    int colStart = (y - 1) * size;
+
+    boundaries[0][0] = rowStart;            
+    boundaries[0][1] = colStart;             // TL
+    boundaries[1][0] = rowStart;            
+    boundaries[1][1] = colStart + size;  	 // TR
+    boundaries[2][0] = rowStart + size; 
+    boundaries[2][1] = colStart;             // BL
+    boundaries[3][0] = rowStart + size; 
+    boundaries[3][1] = colStart + size;  	 // BR
+
+    for(int i = 0; i < 4; ++i)
+    {
+        boundaries[i][0] = std::min(boundaries[i][0], totalRows);
+        boundaries[i][1] = std::min(boundaries[i][1], totalCols);
+    }
+}
+
+int** DyadicObject::getBoundaries() const
+{
+    return boundaries;
+}
+
+void DyadicObject::setObstacleCount(int totalObstacles) { 
+    obstacleCount = totalObstacles; 
+}
+
+int DyadicObject::getObstacleCount() const { 
+    return obstacleCount; 
+}
+
+void DyadicObject::setColor(const std::string& c) {
+    color = c; 
+}
+
+std::string DyadicObject::getColor() const { 
+    return color; 
+}
+
+void DyadicObject::setChild(int index, DyadicObject* child) { 
+    children[index] = child;
+}
+
+DyadicObject* DyadicObject::getChild(int index) const { 
+    return children[index]; 
+}
+
+bool DyadicObject::isLeaf() const{
+    if(getChild(0) == nullptr)
+        return true;
+    return false;
+}
+
 DyadicObject::~DyadicObject()
 {
 	// TODO Auto-generated destructor stub
+	if (boundaries)
+    {
+        for (int i = 0; i < 4; ++i)
+            delete[] boundaries[i];
+        delete[] boundaries;
+        boundaries = nullptr;
+    }
 }

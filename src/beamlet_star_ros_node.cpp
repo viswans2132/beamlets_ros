@@ -5,6 +5,7 @@
  */
 
 #include "rclcpp/rclcpp.hpp"
+#include "beamlet_star_ros/quadtree.h"
 
 #include <vector>
 #include <sstream>
@@ -101,6 +102,25 @@ private:
             printGrid();
 
             RCLCPP_INFO(get_logger(), "Beamlet Star Node initialized successfully!");
+
+            QuadTree qt;
+
+            RCLCPP_INFO(get_logger(), "\nBuilding QuadTree. . . .");
+            DyadicObject* qtRoot = qt.buildQuadTree(grid_, smax_, 1, 1, alpha_); // starting at top-left corner, 1 based indexing
+            RCLCPP_INFO(get_logger(), "QuadTree Built!");
+
+            RCLCPP_INFO(get_logger(), "\nPrinting Formal Dyadic Form. . . .");
+            qt.printFormalDyadicForm(qtRoot);
+
+            RCLCPP_INFO(get_logger(), "\nPrinting leaves with boundaries");
+            qt.printLeafBoundaries();
+
+            const auto& leaves = qt.getLeaves();
+            RCLCPP_INFO(get_logger(), "\nTotal leaves: %ld", leaves.size());
+
+            RCLCPP_INFO(get_logger(), "\nPrinting corners of leaves");
+            qt.generateUniqueLeafPoints();
+
         } catch (const std::exception &e){
             RCLCPP_ERROR(get_logger(), "Initialization failed: %s", e.what());
             rclcpp::shutdown();
