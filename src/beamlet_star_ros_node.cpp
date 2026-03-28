@@ -1,5 +1,5 @@
 /**
- * Author: Viswa
+ * Author: viswans2132
  * File: beamlet_star_ros_node.cpp
  * Description: ROS2 main node for the beamlet star project
  */
