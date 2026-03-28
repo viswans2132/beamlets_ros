@@ -7,4 +7,6 @@ Steps to run:
 
 Beamlet Graph creation:
 
-Step 1: 
+Step 1: Generate quad tree (Each node is a dyadic sqaure)
+Step 2: Extract leaves of quadtree (Indivisible squares)
+Step 3: 
