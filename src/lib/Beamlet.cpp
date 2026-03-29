@@ -79,6 +79,7 @@ Beamlet::GetNeighborBeamlets(BeamletGraph* beamletGraph)
 */
 
 
+
 // std::ostream&
 // operator<<(std::ostream & output, const Beamlet & beamlet)
 // {

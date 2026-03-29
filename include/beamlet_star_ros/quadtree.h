@@ -36,9 +36,9 @@ public:
     
     void addLeafBoundaryPoints(DyadicObject* node);
 
-    std::map<std::vector<int>, Point*> getUniqueLeafPoints() const;
+    std::map<std::vector<int>, Point*> getPointMap() const;
 
-    void printUniquePoints(std::map<std::vector<int>, Point*>& pointMap) const;
+    void printPointMap(std::map<std::vector<int>, Point*>& pointMap) const;
 
     ~QuadTree();
 };

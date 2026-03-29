@@ -8,8 +8,7 @@
 #define BEAMLET_H_
 
 #include <vector>
-
-#include "beamlet_star_ros/Point.h"
+#include <list>
 
 class Point;
 class BeamletGraph;

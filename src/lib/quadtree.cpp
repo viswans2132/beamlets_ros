@@ -4,7 +4,6 @@
  */
 
 #include "beamlet_star_ros/quadtree.h"
-#include "beamlet_star_ros/DyadicObject.h"
 #include "rclcpp/rclcpp.hpp"
 
 #include <cmath>
@@ -211,12 +210,12 @@ void QuadTree::addLeafBoundaryPoints(DyadicObject* node)
     }
 }
 
-std::map<std::vector<int>, Point*> QuadTree::getUniqueLeafPoints() const{
+std::map<std::vector<int>, Point*> QuadTree::getPointMap() const{
     return pointMap;
 }
 
-void QuadTree::printUniquePoints(std::map<std::vector<int>, Point*>& pointMap) const{
-    auto logger = rclcpp::get_logger("Unique Points");
+void QuadTree::printPointMap(std::map<std::vector<int>, Point*>& pointMap) const{
+    auto logger = rclcpp::get_logger("Point Map");
 
     int idx = 0;
     for (const auto& kv : pointMap)

@@ -6,11 +6,13 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "beamlet_star_ros/quadtree.h"
+#include "beamlet_star_ros/BeamletGraph.h"
 
 #include <vector>
 #include <sstream>
 #include <stdexcept>
 #include <map>
+#include <string>
 
 class BeamletStarRosNode : public rclcpp::Node
 {
@@ -119,11 +121,30 @@ private:
             const auto& leaves = qt.getLeaves();
             RCLCPP_INFO(get_logger(), "\nTotal leaves: %ld", leaves.size());
 
-            RCLCPP_INFO(get_logger(), "Printing unique points. . . .");
-            qt.printUniquePoints(points);
-
-            std::map<std::vector<int>, Point*> points = qt.getUniqueLeafPoints();
+            std::map<std::vector<int>, Point*> points = qt.getPointMap();
             RCLCPP_INFO(get_logger(), "\nTotal unique points = %ld", points.size());
+
+            RCLCPP_INFO(get_logger(), "Printing unique points. . . .");
+            qt.printPointMap(points);
+
+            BeamletGraph graph;
+
+            RCLCPP_INFO(get_logger(), "\nGenerating Beamlets. . . .");
+            graph.generateBeamlets(points);
+            RCLCPP_INFO(get_logger(), "Beamlets generated!");
+
+            RCLCPP_INFO(get_logger(), "Total beamlets generated: %d", graph.getBeamletCount());
+
+            RCLCPP_INFO(get_logger(), "Displaying beamlets. . . .");
+            try
+            {
+                std::string filePath = graph.printBeamlets();
+                RCLCPP_INFO(get_logger(), "Beamlets written to: %s", filePath.c_str());
+            }
+            catch(const std::exception& e)
+            {
+                RCLCPP_ERROR(get_logger(), "Failed to open beamlets.txt for writing!");
+            }
 
         } catch (const std::exception &e){
             RCLCPP_ERROR(get_logger(), "Initialization failed: %s", e.what());
