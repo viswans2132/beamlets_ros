@@ -9,4 +9,5 @@ Beamlet Graph creation:
 
 Step 1: Generate quad tree (Each node is a dyadic sqaure)
 Step 2: Extract leaves of quadtree (Indivisible squares)
-Step 3: 
+Step 3: Generate points on edges of leaves in a set
+Step 4: 

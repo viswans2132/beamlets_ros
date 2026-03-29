@@ -10,6 +10,7 @@
 #include <vector>
 #include <sstream>
 #include <stdexcept>
+#include <map>
 
 class BeamletStarRosNode : public rclcpp::Node
 {
@@ -112,14 +113,17 @@ private:
             RCLCPP_INFO(get_logger(), "\nPrinting Formal Dyadic Form. . . .");
             qt.printFormalDyadicForm(qtRoot);
 
-            RCLCPP_INFO(get_logger(), "\nPrinting leaves with boundaries");
-            qt.printLeafBoundaries();
+            RCLCPP_INFO(get_logger(), "\nPrinting leaves corners. . . .");
+            qt.printLeafCorners();
 
             const auto& leaves = qt.getLeaves();
             RCLCPP_INFO(get_logger(), "\nTotal leaves: %ld", leaves.size());
 
-            RCLCPP_INFO(get_logger(), "\nPrinting corners of leaves");
-            qt.generateUniqueLeafPoints();
+            RCLCPP_INFO(get_logger(), "Printing unique points. . . .");
+            qt.printUniquePoints(points);
+
+            std::map<std::vector<int>, Point*> points = qt.getUniqueLeafPoints();
+            RCLCPP_INFO(get_logger(), "\nTotal unique points = %ld", points.size());
 
         } catch (const std::exception &e){
             RCLCPP_ERROR(get_logger(), "Initialization failed: %s", e.what());

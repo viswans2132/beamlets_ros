@@ -232,6 +232,15 @@ Point::GetPairPoints(BeamletGraph *beamletGraph)
 // 	return output;
 // }
 
+void Point::generateNewPoint(std::map<std::vector<int>, Point*>& pointMap,
+                               std::vector<int> coordinates)
+{
+    if (pointMap.find(coordinates) != pointMap.end())
+        return;
+
+    Point* p = new Point(coordinates);
+    pointMap[coordinates] = p;
+}
 
 Point::~Point()
 {

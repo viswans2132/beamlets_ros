@@ -16,6 +16,7 @@
 #include "beamlet_star_ros/BeamletGraph.h"
 
 #include <iostream>
+#include <map>
 
 class Beamlet;
 // class Cluster;
@@ -63,6 +64,9 @@ public:
 	// GetPairPoints(BeamletGraph *beamletGraph);
 
 	friend std::ostream& operator<<(std::ostream& output, const Point& point);
+
+	void static generateNewPoint(std::map<std::vector<int>, Point*>& pointMap,
+							   std::vector<int> coordinates);
 
 	~Point(void);
 

@@ -62,15 +62,18 @@ DyadicObject* QuadTree::buildQuadTree(std::vector<std::vector<int>>& grid, int s
     if(totalObstacles == 0) {
         node->setColor("WHITE");
         leaves.push_back(node);
+        addLeafBoundaryPoints(node);
     } else if(totalObstacles == totalCells) {
         node->setColor("BLACK");
         leaves.push_back(node);
+        addLeafBoundaryPoints(node);
     } else{
         node->setColor("GRAY");
 
         if(scale == 0)
         {
             leaves.push_back(node);
+            addLeafBoundaryPoints(node);
             return node;
         }
 
@@ -80,6 +83,7 @@ DyadicObject* QuadTree::buildQuadTree(std::vector<std::vector<int>>& grid, int s
         if((totalObstacles < lowerLimit || totalObstacles > upperLimit))
         {
             leaves.push_back(node);
+            addLeafBoundaryPoints(node);
             return node;
         }
 
@@ -137,9 +141,9 @@ void QuadTree::printFormalDyadicForm(DyadicObject* node) const
     }
 }
 
-void QuadTree::printLeafBoundaries() const
+void QuadTree::printLeafCorners() const
 {
-    auto logger = rclcpp::get_logger("Leaf Boundaries");
+    auto logger = rclcpp::get_logger("Leaf Corners");
 
     for(const auto* node : leaves)
     {
@@ -151,7 +155,7 @@ void QuadTree::printLeafBoundaries() const
         Key k = node->GetKey();
 
         RCLCPP_INFO(logger,
-            "Leaf q(%d;%d,%d,%s) boundaries:",
+            "Leaf q(%d;%d,%d,%s) Corners:",
             k.scale,
             k.position[0],
             k.position[1],
@@ -166,6 +170,68 @@ void QuadTree::printLeafBoundaries() const
 
 const std::vector<DyadicObject*>& QuadTree::getLeaves() const { 
     return leaves; 
+}
+
+void QuadTree::addLeafBoundaryPoints(DyadicObject* node)
+{
+    int** b = node->getBoundaries();
+    if (!b) return;
+
+    int rowStart = b[0][0];
+    int colStart = b[0][1];
+    int rowEnd   = b[2][0];
+    int colEnd   = b[1][1];
+
+    // ---- LEFT EDGE ----
+    for (int r = rowStart; r <= rowEnd; ++r)
+    {
+        std::vector<int> coords = {r, colStart};
+        Point::generateNewPoint(pointMap, coords);
+    }
+
+    // ---- RIGHT EDGE ----
+    for (int r = rowStart; r <= rowEnd; ++r)
+    {
+        std::vector<int> coords = {r, colEnd};
+        Point::generateNewPoint(pointMap, coords);
+    }
+
+    // ---- TOP EDGE ----
+    for (int c = colStart; c <= colEnd; ++c)
+    {
+        std::vector<int> coords = {rowStart, c};
+        Point::generateNewPoint(pointMap, coords);
+    }
+
+    // ---- BOTTOM EDGE ----
+    for (int c = colStart; c <= colEnd; ++c)
+    {
+        std::vector<int> coords = {rowEnd, c};
+        Point::generateNewPoint(pointMap, coords);
+    }
+}
+
+std::map<std::vector<int>, Point*> QuadTree::getUniqueLeafPoints() const{
+    return pointMap;
+}
+
+void QuadTree::printUniquePoints(std::map<std::vector<int>, Point*>& pointMap) const{
+    auto logger = rclcpp::get_logger("Unique Points");
+
+    int idx = 0;
+    for (const auto& kv : pointMap)
+    {
+        const std::vector<int>& coords = kv.first;
+
+        if (coords.size() >= 2)
+        {
+            RCLCPP_INFO(logger,
+                        "Point %d: (%d, %d)",
+                        idx++,
+                        coords[0],
+                        coords[1]);
+        }
+    }
 }
 
 QuadTree::~QuadTree()
